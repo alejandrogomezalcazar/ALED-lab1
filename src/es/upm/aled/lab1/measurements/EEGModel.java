@@ -131,7 +131,18 @@ public class EEGModel {
 	 */
 	public void saveFile(String fileName) throws IOException {
 		// TODO
-		
+		File f = new File(fileName);
+		FileOutputStream fos = new FileOutputStream(f);
+		PrintStream ps = new PrintStream(fos);
+		String line = null;
+		for (Measurement m : this.measurements) {
+			for (int i = 0; i < m.numChannels(); i++) {
+				line += (", " + m.getChannel(i));
+			}
+			ps.println(line);
+		}
+		fos.close();
+		ps.close();
 	}
 
 	/**
@@ -245,17 +256,18 @@ public class EEGModel {
 		return new Measurement(curDataPacket_values);
 	}
 
-	public static void main(String[] args) {
+	public static void main(String[] args) throws IOException {
 		if (args.length > 0) {
 			EEGModel eeg = new EEGModel(args[0]);
 			eeg.plotData();
 			// TODO
+			eeg.saveFile("Synthetic.txt");
 			
 		} else {
 			EEGModel eeg = new EEGModel();
 			eeg.createSyntheticData(1000);
 			// TODO
-			
+			eeg.saveFile("Synthetic.txt");
 		}
 	}
 }
